@@ -2,7 +2,11 @@
 
 > An advanced, studio-grade full-stack web application that converts photos into realistic, handcrafted pencil sketches using **Python Flask**, **OpenCV**, **Pillow**, and modern responsive **HTML5/CSS3/JavaScript**.
 
-![PencilSketch AI Demo](static/presets/portrait.jpg)
+## 📸 Live Application Showcase
+
+| Pikachu Realistic Pencil Sketch | Pokémon Team Line Art & Shading |
+| :---: | :---: |
+| ![Pikachu Demo](docs/screenshots/pencilsketch_pikachu_demo.png) | ![Pokemon Team Demo](docs/screenshots/pencilsketch_pokemon_team_demo.png) |
 
 ---
 
@@ -95,8 +99,8 @@ pencil-sketch/
 
 ### 1. Clone or Open the Repository
 ```bash
-git clone https://github.com/your-username/pencilsketch-ai.git
-cd pencilsketch-ai
+git clone https://github.com/Janani-V219/Pencil_Sketch.git
+cd Pencil_Sketch
 ```
 
 ### 2. Create and Activate a Virtual Environment
