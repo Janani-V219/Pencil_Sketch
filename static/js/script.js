@@ -236,6 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function onUploadSuccess(fileId, filename, originalUrl) {
     state.currentFileId = fileId;
     state.currentFilename = filename;
+    state.isProcessing = false; // Reset processing flag after upload completes
 
     // Load original image into DOM
     originalImg.src = originalUrl;
@@ -303,15 +304,28 @@ document.addEventListener('DOMContentLoaded', () => {
         state.currentSketchFilename = data.filename;
         const sketchUrl = `${data.sketch_url}?t=${Date.now()}`;
 
+        // Set listeners before updating src
+        sketchImg.onload = () => {
+          syncImageDimensions();
+          setProcessingState(false);
+        };
+        sketchImg.onerror = () => {
+          setProcessingState(false);
+          showToast('Image display error, please retry.', 'error');
+        };
+
         // Update image sources
         sketchImg.src = sketchUrl;
         sideSketchImg.src = sketchUrl;
         lightboxImg.src = sketchUrl;
 
-        sketchImg.onload = () => {
-          syncImageDimensions();
-          setProcessingState(false);
-        };
+        // Fallback safety timeout if image is already cached or load event is delayed
+        setTimeout(() => {
+          if (state.isProcessing) {
+            syncImageDimensions();
+            setProcessingState(false);
+          }
+        }, 1200);
 
         // Update badges
         activeStyleBadge.textContent = styleNames[state.currentStyle] || 'Custom Sketch';
