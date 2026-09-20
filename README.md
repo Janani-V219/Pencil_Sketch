@@ -227,4 +227,4 @@ Render offers a free tier for Python web applications:
 
 ## 📄 License
 
-Distributed under the MIT License. Free to use for personal, educational, and commercial portfolio projects.
+Free to use for personal, educational, and commercial portfolio projects.
