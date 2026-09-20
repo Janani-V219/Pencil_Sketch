@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PencilSketch AI — Studio Quality Photo to Pencil Sketch Converter</title>
+  <meta name="description" content="Convert your photos into realistic, handcrafted pencil sketches in seconds using advanced OpenCV algorithms. Choose from Realistic Graphite, Soft Pencil, Dark Pencil, Charcoal, and Detailed Sketch.">
+  <meta name="theme-color" content="#0d0f17">
+
+  <!-- Google Fonts: Outfit & Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <!-- Background Animated Aurora Ambient Glow -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
+  <!-- App Header / Navigation -->
+  <header class="app-header" id="appHeader">
+    <div class="header-container">
+      <a href="#" class="brand-logo" id="brandLogo">
+        <div class="brand-icon-box">
+          <svg class="brand-pencil-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+            <path d="m15 5 4 4"></path>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">PencilSketch <span class="gradient-text">AI</span></span>
+          <span class="brand-tagline">OpenCV Vision Studio</span>
+        </div>
+      </a>
+
+      <div class="header-actions">
+        <div class="tech-pill">
+          <span class="pulse-dot"></span>
+          <span>OpenCV 5.0 + Flask</span>
+        </div>
+
+        <!-- Theme Toggle Button -->
+        <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle Theme" title="Toggle Light / Dark Mode">
+          <span class="sun-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          </span>
+          <span class="moon-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </span>
+        </button>
+
+        <a href="#howItWorks" class="header-link">How It Works</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Layout -->
+  <main class="main-content">
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="heroSection">
+      <div class="hero-badge">
+        <span class="badge-sparkle">✨</span> Realistic Hand-Drawn Art Simulation
+      </div>
+      <h1 class="hero-title">Turn Any Photo Into A <span class="gradient-text">Masterpiece</span> Pencil Sketch</h1>
+      <p class="hero-subtitle">
+        Powered by classical computer vision algorithms including Color-Dodge blending, Gaussian inversion, and adaptive CLAHE contrast curves. Free, instant, and high-resolution.
+      </p>
+
+      <!-- Key Benefits Quick Ribbon -->
+      <div class="hero-metrics">
+        <div class="metric-item">
+          <span class="metric-val">5 Styles</span>
+          <span class="metric-lbl">Graphite to Charcoal</span>
+        </div>
+        <div class="metric-divider"></div>
+        <div class="metric-item">
+          <span class="metric-val">100% Client-Safe</span>
+          <span class="metric-lbl">Zero data retention</span>
+        </div>
+        <div class="metric-divider"></div>
+        <div class="metric-item">
+          <span class="metric-val">&lt; 250ms</span>
+          <span class="metric-lbl">Sub-second OpenCV speed</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Upload & Presets Section (Active when no image or switching) -->
+    <section class="upload-section" id="uploadSection">
+      <div class="upload-card">
+        <!-- Drag & Drop Zone -->
+        <div class="dropzone" id="dropZone">
+          <input type="file" id="fileInput" accept="image/png, image/jpeg, image/jpg, image/webp" class="file-input" hidden>
+          
+          <div class="dropzone-icon-wrapper">
+            <div class="dropzone-glow"></div>
+            <svg class="upload-cloud-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path>
+              <path d="M12 12v9"></path>
+              <path d="m16 16-4-4-4 4"></path>
+            </svg>
+          </div>
+
+          <h3 class="dropzone-title">Drag & drop your photo here</h3>
+          <p class="dropzone-sub">or <button type="button" class="btn-browse" id="browseBtn">browse files</button> from your device</p>
+          <div class="dropzone-tags">
+            <span class="tag">JPG</span>
+            <span class="tag">PNG</span>
+            <span class="tag">WEBP</span>
+            <span class="tag">Max 16MB</span>
+          </div>
+        </div>
+
+        <!-- Sample Demo Presets Drawer -->
+        <div class="presets-container" id="presetsContainer">
+          <div class="presets-header">
+            <span class="presets-title">⚡ Or try with instant sample photos:</span>
+          </div>
+          <div class="presets-grid" id="presetsGrid">
+            <!-- Populated via JS /api/presets -->
+            <button class="preset-card" data-preset="portrait" id="presetPortrait">
+              <div class="preset-thumb-wrap">
+                <img src="/static/presets/portrait.jpg" alt="Portrait Sample" class="preset-thumb" loading="lazy">
+              </div>
+              <div class="preset-meta">
+                <span class="preset-name">Artistic Portrait</span>
+                <span class="preset-badge">Soft Shading</span>
+              </div>
+            </button>
+
+            <button class="preset-card" data-preset="architecture" id="presetArchitecture">
+              <div class="preset-thumb-wrap">
+                <img src="/static/presets/architecture.jpg" alt="Architecture Sample" class="preset-thumb" loading="lazy">
+              </div>
+              <div class="preset-meta">
+                <span class="preset-name">Landmark Architecture</span>
+                <span class="preset-badge">Fine Lines</span>
+              </div>
+            </button>
+
+            <button class="preset-card" data-preset="landscape" id="presetLandscape">
+              <div class="preset-thumb-wrap">
+                <img src="/static/presets/landscape.jpg" alt="Landscape Sample" class="preset-thumb" loading="lazy">
+              </div>
+              <div class="preset-meta">
+                <span class="preset-name">Alpine Mountains</span>
+                <span class="preset-badge">Tonal Wash</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Studio Workspace (Shown once an image is uploaded or preset selected) -->
+    <section class="studio-section" id="studioSection" style="display: none;">
+      <div class="studio-layout">
+        
+        <!-- Left Column: Interactive Canvas & Comparison Viewer -->
+        <div class="canvas-column">
+          <!-- Canvas Top Toolbar -->
+          <div class="canvas-toolbar">
+            <div class="toolbar-left">
+              <span class="active-badge" id="activeStyleBadge">Realistic Graphite</span>
+              <span class="latency-badge" id="latencyBadge">⚡ 84ms</span>
+            </div>
+            
+            <div class="toolbar-right">
+              <!-- View Mode Toggle: Slider vs Side-by-Side -->
+              <div class="view-mode-toggle" id="viewModeToggle" role="group" aria-label="View Mode">
+                <button class="mode-btn active" data-mode="slider" id="modeSliderBtn" title="Split Screen Comparison Slider">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 3H6a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3V6a3 3 0 0 0-3-3z"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+                  <span>Split Slider</span>
+                </button>
+                <button class="mode-btn" data-mode="side-by-side" id="modeSideBtn" title="Side-by-Side Comparison">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="8" height="18" rx="1"/><rect x="13" y="3" width="8" height="18" rx="1"/></svg>
+                  <span>Side-by-Side</span>
+                </button>
+              </div>
+
+              <!-- Fullscreen Zoom Button -->
+              <button class="icon-tool-btn" id="zoomModalBtn" title="Open Fullscreen Inspect">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Viewer Display Container -->
+          <div class="viewer-wrapper">
+            
+            <!-- 1. Interactive Split Slider Container -->
+            <div class="comparison-container" id="comparisonContainer">
+              <!-- Background Image: Original Photo -->
+              <img src="" alt="Original Photo" id="originalImg" class="img-original" draggable="false">
+
+              <!-- Foreground Clipped Image: Generated Sketch -->
+              <div class="sketch-clip-wrapper" id="sketchClipWrapper">
+                <img src="" alt="Pencil Sketch" id="sketchImg" class="img-sketch" draggable="false">
+              </div>
+
+              <!-- Draggable Slider Handle Line -->
+              <div class="slider-handle" id="sliderHandle">
+                <div class="slider-line"></div>
+                <div class="slider-thumb">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="handle-arrow">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                  </svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="handle-arrow">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Badges on Image -->
+              <div class="image-tag-badge tag-left">ORIGINAL</div>
+              <div class="image-tag-badge tag-right">PENCIL SKETCH</div>
+            </div>
+
+            <!-- 2. Side-by-Side Container (Toggled via button) -->
+            <div class="side-by-side-container" id="sideBySideContainer" style="display: none;">
+              <div class="side-card">
+                <div class="side-label">Original Photo</div>
+                <div class="side-img-box">
+                  <img src="" alt="Original" id="sideOriginalImg" class="side-img">
+                </div>
+              </div>
+              <div class="side-card">
+                <div class="side-label">Pencil Sketch</div>
+                <div class="side-img-box">
+                  <img src="" alt="Sketch" id="sideSketchImg" class="side-img">
+                </div>
+              </div>
+            </div>
+
+            <!-- Processing Animation Overlay -->
+            <div class="processing-overlay" id="processingOverlay" style="display: none;">
+              <div class="processing-card">
+                <div class="sketching-animation-wrapper">
+                  <svg class="sketching-svg" viewBox="0 0 100 100">
+                    <path class="sketch-path" d="M20,80 Q50,20 80,80 T20,80" />
+                    <g class="animated-pencil">
+                      <polygon points="0,0 20,4 20,-4" fill="#6366f1" />
+                      <polygon points="20,4 60,7 60,-7 20,-4" fill="#fbbf24" />
+                      <polygon points="60,7 70,7 70,-7 60,-7" fill="#ef4444" />
+                    </g>
+                  </svg>
+                </div>
+                <h4 class="processing-title">Rendering Sketch</h4>
+                <p class="processing-step" id="processingStepText">Inverting grayscale &amp; computing color-dodge...</p>
+                <div class="progress-track">
+                  <div class="progress-bar" id="progressBar"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Bottom Action Buttons Strip -->
+          <div class="canvas-bottom-bar">
+            <button type="button" class="btn-secondary" id="resetBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+              <span>Upload New</span>
+            </button>
+
+            <div class="download-group">
+              <button type="button" class="btn-primary" id="downloadSketchBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <span>Download Sketch (PNG)</span>
+              </button>
+
+              <button type="button" class="btn-outline" id="downloadComparisonBtn" title="Download Side-by-Side Before & After Graphic">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="3" x2="12" y2="21"></line></svg>
+                <span>Comparison Image</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Artistic Style Cards & Fine-Tuning Controls -->
+        <div class="controls-column">
+          <div class="controls-card">
+            
+            <!-- Section Header -->
+            <div class="controls-header">
+              <h2 class="controls-title">Sketch Styles</h2>
+              <span class="controls-subtitle">Select an artistic pencil lead medium</span>
+            </div>
+
+            <!-- 5 Artistic Style Radio Cards -->
+            <div class="style-cards-grid" id="styleSelector">
+              
+              <!-- Style 1: Realistic Graphite -->
+              <label class="style-card active" data-style="graphite">
+                <input type="radio" name="sketchStyle" value="graphite" checked hidden>
+                <div class="style-icon-box">✏️</div>
+                <div class="style-info">
+                  <div class="style-name">Realistic Graphite</div>
+                  <div class="style-desc">HB/2B lead with delicate gradient shading</div>
+                </div>
+                <div class="style-badge">Classic</div>
+              </label>
+
+              <!-- Style 2: Soft Pencil -->
+              <label class="style-card" data-style="soft">
+                <input type="radio" name="sketchStyle" value="soft" hidden>
+                <div class="style-icon-box">🎨</div>
+                <div class="style-info">
+                  <div class="style-name">Soft Pencil</div>
+                  <div class="style-desc">Stump-blended gentle midtone wash</div>
+                </div>
+                <div class="style-badge">Smooth</div>
+              </label>
+
+              <!-- Style 3: Dark Pencil -->
+              <label class="style-card" data-style="dark">
+                <input type="radio" name="sketchStyle" value="dark" hidden>
+                <div class="style-icon-box">✒️</div>
+                <div class="style-info">
+                  <div class="style-name">Dark Pencil</div>
+                  <div class="style-desc">Heavy 8B carbon with punchy contrast</div>
+                </div>
+                <div class="style-badge">Bold</div>
+              </label>
+
+              <!-- Style 4: Charcoal -->
+              <label class="style-card" data-style="charcoal">
+                <input type="radio" name="sketchStyle" value="charcoal" hidden>
+                <div class="style-icon-box">🖤</div>
+                <div class="style-info">
+                  <div class="style-name">Charcoal</div>
+                  <div class="style-desc">Expressive rough grain & smudged blacks</div>
+                </div>
+                <div class="style-badge">Textured</div>
+              </label>
+
+              <!-- Style 5: Detailed Sketch -->
+              <label class="style-card" data-style="detailed">
+                <input type="radio" name="sketchStyle" value="detailed" hidden>
+                <div class="style-icon-box">📐</div>
+                <div class="style-info">
+                  <div class="style-name">Detailed Sketch</div>
+                  <div class="style-desc">Crisp architectural lines and hatching</div>
+                </div>
+                <div class="style-badge">Precise</div>
+              </label>
+
+            </div>
+
+            <!-- Divider -->
+            <div class="controls-divider"></div>
+
+            <!-- Parameter Sliders -->
+            <div class="sliders-section">
+              <div class="sliders-header">
+                <h3 class="sliders-title">Fine-Tuning Controls</h3>
+                <button type="button" class="btn-link" id="resetSlidersBtn">Reset to Default</button>
+              </div>
+
+              <!-- Slider 1: Intensity -->
+              <div class="slider-group">
+                <div class="slider-meta">
+                  <label for="intensitySlider" class="slider-label">Sketch Intensity</label>
+                  <span class="slider-val" id="intensityVal">50</span>
+                </div>
+                <input type="range" id="intensitySlider" min="10" max="100" value="50" step="1" class="custom-range">
+                <div class="slider-ticks">
+                  <span>Subtle</span>
+                  <span>Balanced</span>
+                  <span>Intense</span>
+                </div>
+              </div>
+
+              <!-- Slider 2: Darkness -->
+              <div class="slider-group">
+                <div class="slider-meta">
+                  <label for="darknessSlider" class="slider-label">Darkness / Contrast</label>
+                  <span class="slider-val" id="darknessVal">50</span>
+                </div>
+                <input type="range" id="darknessSlider" min="10" max="100" value="50" step="1" class="custom-range">
+                <div class="slider-ticks">
+                  <span>Light</span>
+                  <span>Medium</span>
+                  <span>Deep 8B</span>
+                </div>
+              </div>
+
+              <!-- Slider 3: Line Detail -->
+              <div class="slider-group">
+                <div class="slider-meta">
+                  <label for="detailSlider" class="slider-label">Stroke Detail</label>
+                  <span class="slider-val" id="detailVal">50</span>
+                </div>
+                <input type="range" id="detailSlider" min="10" max="100" value="50" step="1" class="custom-range">
+                <div class="slider-ticks">
+                  <span>Soft Blur</span>
+                  <span>Natural</span>
+                  <span>Razor Sharp</span>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Apply / Re-render Button -->
+            <div class="controls-action-box">
+              <button type="button" class="btn-primary full-width" id="reprocessBtn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 5 5L20 7"></path></svg>
+                <span>Apply Adjustments</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- How It Works & Algorithm Deep Dive Section -->
+    <section class="info-section" id="howItWorks">
+      <div class="section-badge">Behind The Scenes</div>
+      <h2 class="section-title">How The OpenCV Vision Pipeline Works</h2>
+      <p class="section-subtitle">Real-time image synthesis without heavy neural network latency</p>
+
+      <div class="steps-grid">
+        <!-- Step 1 -->
+        <div class="step-card">
+          <div class="step-num">01</div>
+          <h3 class="step-title">Grayscale Extraction</h3>
+          <p class="step-text">Converts RGB/BGR color channels into luminance intensities using standard ITU-R 601-2 luma weights, stripping distracting chromatic data.</p>
+          <div class="step-code">cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)</div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step-card">
+          <div class="step-num">02</div>
+          <h3 class="step-title">Inversion &amp; Gaussian Blur</h3>
+          <p class="step-text">Calculates bitwise negative and applies a dynamically sized 2D Gaussian kernel to isolate edge high-frequency variations from low-frequency gradients.</p>
+          <div class="step-code">cv2.GaussianBlur(255 - gray, (k, k), 0)</div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step-card">
+          <div class="step-num">03</div>
+          <h3 class="step-title">Color-Dodge Division</h3>
+          <p class="step-text">Applies mathematical color dodge division: dividing the original grayscale by the inverted blurred mask to produce pencil hatching and strokes.</p>
+          <div class="step-code">cv2.divide(gray, 255 - blur, scale=256)</div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step-card">
+          <div class="step-num">04</div>
+          <h3 class="step-title">Graphite Tone Mapping</h3>
+          <p class="step-text">Applies gamma non-linear curves, synthetic paper grain micro-textures, and adaptive CLAHE contrast curves tailored for each artistic style.</p>
+          <div class="step-code">cv2.LUT(sketch, gamma_table) + grain</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Fullscreen Zoom Lightbox Modal -->
+  <div class="lightbox-modal" id="lightboxModal" style="display: none;">
+    <div class="lightbox-backdrop" id="lightboxBackdrop"></div>
+    <div class="lightbox-content">
+      <button type="button" class="lightbox-close" id="lightboxClose" title="Close Lightbox">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+      <div class="lightbox-img-wrapper">
+        <img src="" alt="Fullscreen Sketch" id="lightboxImg">
+      </div>
+      <div class="lightbox-caption">
+        <span id="lightboxCaptionStyle">Realistic Graphite Sketch</span>
+        <button class="btn-primary" id="lightboxDownloadBtn">Download Full Resolution</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- App Footer -->
+  <footer class="app-footer">
+    <div class="footer-container">
+      <div class="footer-brand">
+        <span class="footer-logo">PencilSketch AI</span>
+        <p class="footer-desc">Professional computer vision image conversion studio powered by Python, OpenCV, and Flask.</p>
+      </div>
+      <div class="footer-badges">
+        <span class="badge-item">OpenCV 5.0</span>
+        <span class="badge-item">Pillow 10</span>
+        <span class="badge-item">Python 3.14</span>
+        <span class="badge-item">Vanilla JS</span>
+      </div>
+      <div class="footer-copyright">
+        © 2026 PencilSketch AI. Built for portfolio &amp; production deployment on Render &amp; Hugging Face.
+      </div>
+    </div>
+  </footer>
+
+  <!-- Main JavaScript App Logic -->
+  <script src="/static/js/script.js"></script>
+</body>
+</html>
